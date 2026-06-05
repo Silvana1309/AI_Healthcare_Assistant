@@ -12,11 +12,8 @@ function showWebsite(name) {
   const hour = new Date().getHours();
   let greeting = "Good Evening";
 
-  if (hour < 12) {
-    greeting = "Good Morning";
-  } else if (hour < 18) {
-    greeting = "Good Afternoon";
-  }
+  if (hour < 12) greeting = "Good Morning";
+  else if (hour < 18) greeting = "Good Afternoon";
 
   const welcomeText = document.getElementById("welcomeText");
   if (welcomeText) {
@@ -103,13 +100,9 @@ async function sendMessage(event) {
     });
 
     const data = await response.json();
-
     loadingMessage.remove();
 
-    addMessage(
-      data.bot_response || "No response from chatbot",
-      "bot"
-    );
+    addMessage(data.bot_response || "No response from chatbot", "bot");
 
   } catch (error) {
     console.error(error);
@@ -138,15 +131,11 @@ async function getSymptomGuidance() {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        age: age,
-        symptoms: symptoms
-      })
+      body: JSON.stringify({ age, symptoms })
     });
 
     const data = await response.json();
     result.innerHTML = `<pre>${data.result}</pre>`;
-
   } catch (error) {
     console.error(error);
     result.innerHTML = "Failed to get symptom guidance.";
@@ -232,15 +221,15 @@ async function getSymptomSeverity() {
       },
       body: JSON.stringify({
         message: `
-        Symptoms: ${symptoms}
-        Duration: ${duration}
-        Severity level: ${severity}
+Symptoms: ${symptoms}
+Duration: ${duration}
+Severity level: ${severity}
 
-        Classify the symptom severity as Low, Moderate, or High risk.
-        Provide safe general recommendations.
-        Do not diagnose.
-        Answer in English.
-        `
+Classify the symptom severity as Low, Moderate, or High risk.
+Provide safe general recommendations.
+Do not diagnose.
+Answer in English.
+`
       })
     });
 
@@ -267,15 +256,10 @@ function calculateBMI() {
 
   let category = "";
 
-  if (bmi < 18.5) {
-    category = "Underweight";
-  } else if (bmi < 25) {
-    category = "Normal weight";
-  } else if (bmi < 30) {
-    category = "Overweight";
-  } else {
-    category = "Obesity";
-  }
+  if (bmi < 18.5) category = "Underweight";
+  else if (bmi < 25) category = "Normal weight";
+  else if (bmi < 30) category = "Overweight";
+  else category = "Obesity";
 
   result.innerHTML = `
     <h4>BMI Result</h4>
@@ -307,13 +291,13 @@ async function getHealthRisk() {
       },
       body: JSON.stringify({
         message: `
-        Age: ${age}
-        Smoking: ${smoking}
-        Exercise: ${exercise}
-        Family disease history: ${familyHistory || "None"}
+Age: ${age}
+Smoking: ${smoking}
+Exercise: ${exercise}
+Family disease history: ${familyHistory || "None"}
 
-        Provide general health risk assessment and prevention suggestions.
-        `
+Provide general health risk assessment and prevention suggestions.
+`
       })
     });
 
@@ -355,25 +339,7 @@ async function explainMedicalTerm() {
   }
 }
 
-function updateProfileDashboard() {
-  const userName = localStorage.getItem("userName") || "User";
-  const profileName = document.getElementById("profileName");
-
-  if (profileName) {
-    profileName.textContent = userName;
-  }
-}
-
-updateProfileDashboard();
-
-userInput.addEventListener("keydown", function(event) {
-  if (event.key === "Enter") {
-    event.preventDefault();
-    sendMessage(event);
-  }
-});
-
-  function calculateWaterIntake() {
+function calculateWaterIntake() {
   const weight = Number(document.getElementById("waterWeightInput").value);
   const result = document.getElementById("waterResult");
 
@@ -391,15 +357,15 @@ userInput.addEventListener("keydown", function(event) {
 }
 
 function calculateCalories() {
-  const age = Number(document.getElementById("calorieAgeInput").value);
-  const weight = Number(document.getElementById("calorieWeightInput").value);
-  const height = Number(document.getElementById("calorieHeightInput").value);
-  const gender = document.getElementById("genderInput").value;
-  const activity = Number(document.getElementById("activityInput").value);
+  const age = Number(document.getElementById("calorieAge").value);
+  const weight = Number(document.getElementById("calorieWeight").value);
+  const height = Number(document.getElementById("calorieHeight").value);
+  const gender = document.getElementById("calorieGender").value;
+  const activity = Number(document.getElementById("calorieActivity").value);
   const result = document.getElementById("calorieResult");
 
   if (!age || !weight || !height || !gender || !activity) {
-    alert("Please complete all calorie calculator fields");
+    alert("Please complete all calorie calculator fields.");
     return;
   }
 
@@ -411,12 +377,33 @@ function calculateCalories() {
     bmr = 10 * weight + 6.25 * height - 5 * age - 161;
   }
 
-  const calories = bmr * activity;
+  const calories = Math.round(bmr * activity);
 
   result.innerHTML = `
     <h4>Daily Calorie Result</h4>
-    <p><strong>Estimated calories:</strong> ${calories.toFixed(0)} kcal/day</p>
+    <p><strong>Estimated Calories:</strong> ${calories} kcal/day</p>
+    <p>This is a general estimate and does not replace professional nutrition advice.</p>
   `;
+}
+
+function updateProfileDashboard() {
+  const userName = localStorage.getItem("userName") || "User";
+  const profileName = document.getElementById("profileName");
+
+  if (profileName) {
+    profileName.textContent = userName;
+  }
+}
+
+updateProfileDashboard();
+
+if (userInput) {
+  userInput.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      sendMessage(event);
+    }
+  });
 }
 
 renderChat();
